@@ -1,34 +1,43 @@
 `timescale 1ns / 1ps
-module tb_alu;
+module tb_melay;
 
 	// Inputs
-	reg [3:0] A;
-	reg [3:0] B;
-	reg [2:0] OpCode;
+	reg din;
+	reg clk;
+	reg rst;
 
 	// Outputs
-	wire [3:0] ALU_Result;
-	wire Zero;
+	wire dout;
 
 	// Instantiate the Unit Under Test (UUT)
-	alu uut (
-		.A(A), 
-		.B(B), 
-		.OpCode(OpCode), 
-		.ALU_Result(ALU_Result), 
-		.Zero(Zero)
+	melay uut (
+		.din(din), 
+		.clk(clk), 
+		.rst(rst), 
+		.dout(dout)
 	);
 
 	initial begin
-		 A = 4'b1010;
-        B = 4'b0011;
-        OpCode = 3'b000; // Addition
-        #10;
-		
-         $display("%b\t%b\t%b\t%b\t%d", A, B, OpCode, ALU_Result, Zero);
- $finish;
+		rst = 1;din = 0;clk = 0;
+		#100; rst=0; clk=1; din=1;
+		#100; din=0;
+		#100; din=1;
+		#100; din=0;
+		#100; din=1;
+		#100; din=0;
+		#100; din=0;
+		#100; din=1;
+		#100; din=0;
 
-	end
+  end
+always
+#50 clk=~clk;
+
+initial begin
+$monitor("time=%g, clk=%b, rst=%b, din=%b, dout=%b",$time,clk,rst,din,dout);
+#1000 $finish;
+end
+
       
 endmodule
 
